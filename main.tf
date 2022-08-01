@@ -23,7 +23,7 @@ locals {
     teams               = try(workspace["teams"], [])
     terraform_version   = try(workspace["terraform_version"], "~> 1.2.6")
     tag_names           = try(workspace["tag_names"], [])
-    auto_apply          = try(workspace["auto_apply"], true)
+    auto_apply          = true
     allow_destroy_plan  = try(workspace["auto_apply"], true)
     execution_mode      = try(workspace["execution_mode"], "remote")
     speculative_enabled = try(workspace["speculative_enabled"], true)

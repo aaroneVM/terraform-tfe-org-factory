@@ -68,7 +68,6 @@ resource "tfe_workspace" "workspaces" {
   allow_destroy_plan  = each.value["allow_destroy_plan"]
   execution_mode      = each.value["execution_mode"]
   speculative_enabled = each.value["speculative_enabled"]
-  vcs_repo            = each.value["vcs_repo"]
   # Create a single vcs_repo block if value isn't an empty map
   
   dynamic "vcs_repo" {

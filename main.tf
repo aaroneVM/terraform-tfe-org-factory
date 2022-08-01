@@ -72,10 +72,11 @@ resource "tfe_workspace" "workspaces" {
   # Create a single vcs_repo block if value isn't an empty map
   
   dynamic "vcs_repo" {
-    for_each = each.value["vcs_repo"] != {} ? toset([1]) : toset([])
+    for_each = each.value["vcs_repo"] != {} ? toset(["1"]) : toset([])
     
     content {
-      identifier     = vcs_repo["identifier"]
+      #identifier     = vcs_repo["identifier"]
+      identifier     = try(each.value.vcs_repo["identifier"], "aaroneVM/config-org")
       oauth_token_id = vcs_repo["oauth_token_id"]
     }
   }

@@ -74,8 +74,8 @@ resource "tfe_workspace" "workspaces" {
     for_each = each.value["vcs_repo"] != {} ? toset(each.value["vcs_repo"]) : toset([])
 
     content {
-      identifier     = vcs_repo["identifier"]
-      oauth_token_id = vcs_repo["oauth_token_id"]
+      identifier     = vcs_repo.value["identifier"]
+      oauth_token_id = vcs_repo.value["oauth_token_id"]
     }
   }
 }

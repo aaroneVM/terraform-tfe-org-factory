@@ -70,16 +70,16 @@ resource "tfe_workspace" "workspaces" {
   speculative_enabled = each.value["speculative_enabled"]
   vcs_repo            = each.value["vcs_repo"]
   # Create a single vcs_repo block if value isn't an empty map
-  /*
+  
   dynamic "vcs_repo" {
-    for_each = each.value["vcs_repo"] != {} ? toset(each.value["vcs_repo"]) : toset([])
-
+    for_each = each.value["vcs_repo"] != {} ? toset([1]) : toset([])
+    
     content {
-      identifier     = vcs_repo.value["identifier"]
-      oauth_token_id = vcs_repo.value["oauth_token_id"]
+      identifier     = vcs_repo["identifier"]
+      oauth_token_id = vcs_repo["oauth_token_id"]
     }
   }
-}*/
+}
 
 # Create teams
 resource "tfe_team" "teams" {

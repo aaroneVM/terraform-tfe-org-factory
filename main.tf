@@ -71,7 +71,7 @@ resource "tfe_workspace" "workspaces" {
 
   # Create a single vcs_repo block if value isn't an empty map
   dynamic "vcs_repo" {
-    for_each = each.value["vcs_repo"] != {} ? toset(["1"]) : toset([])
+    for_each = each.value["vcs_repo"] != {} ? toset(each.value["vcs_repo"]) : toset([])
 
     content {
       identifier     = vcs_repo["identifier"]

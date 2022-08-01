@@ -149,5 +149,5 @@ resource "tfe_variable" "selected_variables" {
   category     = terraform
   description  = test
   sensitive    = false
-  workspace_id = "ws-bjmiDJuFrahgpZaT"
+  workspace_id = "ws-9mrBJcri5Rd427gv"
 }

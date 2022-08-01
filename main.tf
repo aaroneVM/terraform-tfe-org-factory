@@ -27,7 +27,7 @@ locals {
     allow_destroy_plan  = try(workspace["auto_apply"], true)
     execution_mode      = try(workspace["execution_mode"], "remote")
     speculative_enabled = try(workspace["speculative_enabled"], true)
-    vcs_repo            = try(workspace["vcs_repo"], {})
+    vcs_repo            = try(workspace["vcs_repo"], {"identifier": "aaroneVM/config-org","oauth_token_id": "ot-c7qh71ExuzWb3MCV"})
   }]
 
   #Create a list of workspace access entries
@@ -70,6 +70,7 @@ resource "tfe_workspace" "workspaces" {
   speculative_enabled = each.value["speculative_enabled"]
 
   # Create a single vcs_repo block if value isn't an empty map
+  /*
   dynamic "vcs_repo" {
     for_each = each.value["vcs_repo"] != {} ? toset(each.value["vcs_repo"]) : toset([])
 
@@ -78,7 +79,7 @@ resource "tfe_workspace" "workspaces" {
       oauth_token_id = vcs_repo.value["oauth_token_id"]
     }
   }
-}
+}*/
 
 # Create teams
 resource "tfe_team" "teams" {

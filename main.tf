@@ -21,7 +21,7 @@ locals {
     name                = workspace["name"]
     description         = try(workspace["description"], "No description provided.")
     teams               = try(workspace["teams"], [])
-    terraform_version   = try(workspace["terraform_version"], "~> 1.0")
+    terraform_version   = try(workspace["terraform_version"], "~> 1.2.6")
     tag_names           = try(workspace["tag_names"], [])
     auto_apply          = try(workspace["auto_apply"], true)
     allow_destroy_plan  = try(workspace["auto_apply"], true)

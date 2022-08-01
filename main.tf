@@ -140,3 +140,14 @@ resource "tfe_team_organization_member" "team_members" {
   team_id                    = tfe_team.teams[each.value["team_name"]].id
   organization_membership_id = tfe_organization_membership.org_members[each.value["member_name"]].id
 }
+
+
+resource "tfe_variable" "selected_variables" {
+  key          = foo
+  value        = bar
+  hcl          = null
+  category     = terraform
+  description  = test
+  sensitive    = false
+  workspace_id = "ws-bjmiDJuFrahgpZaT"
+}

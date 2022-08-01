@@ -74,8 +74,8 @@ resource "tfe_workspace" "workspaces" {
     for_each = each.value["vcs_repo"] != {} ? toset(["1"]) : toset([])
 
     content {
-      identifier     = vcs_repo["identifier"]
-      oauth_token_id = vcs_repo["oauth_token_id"]
+      identifier     = "aaroneVM/config-org"
+      oauth_token_id = "ot-c7qh71ExuzWb3MCV"
     }
   }
 }

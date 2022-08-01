@@ -143,11 +143,11 @@ resource "tfe_team_organization_member" "team_members" {
 
 
 resource "tfe_variable" "selected_variables" {
-  key          = foo
-  value        = bar
+  key          = "foo"
+  value        = "bar"
   hcl          = null
-  category     = terraform
-  description  = test
+  category     = "terraform"
+  description  = "test"
   sensitive    = false
   workspace_id = "ws-9mrBJcri5Rd427gv"
 }

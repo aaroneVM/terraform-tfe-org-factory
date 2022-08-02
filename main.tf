@@ -65,7 +65,7 @@ resource "tfe_workspace" "workspaces" {
   terraform_version   = each.value["terraform_version"]
   organization        = local.organization_name
   tag_names           = each.value["tag_names"]
-  auto_apply          = each.value["auto_apply"]
+  auto_apply          = true
   allow_destroy_plan  = each.value["allow_destroy_plan"]
   execution_mode      = each.value["execution_mode"]
   speculative_enabled = each.value["speculative_enabled"]

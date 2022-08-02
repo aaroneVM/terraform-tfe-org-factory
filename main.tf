@@ -29,6 +29,7 @@ locals {
     speculative_enabled = try(workspace["speculative_enabled"], true)
     vcs_repo            = try(workspace["vcs_repo"], {})
     working_directory   = try(workspace["working_directory"], "")
+    trigger_prefixes    = try(workspace["trigger_prefixes"], "")
   }]
 
   #Create a list of workspace access entries
@@ -70,6 +71,7 @@ resource "tfe_workspace" "workspaces" {
   execution_mode      = each.value["execution_mode"]
   speculative_enabled = each.value["speculative_enabled"]
   working_directory   = each.value["working_directory"]
+  trigger_prefixes    = each.value["trigger_prefixes"]
   # Create a single vcs_repo block if value isn't an empty map
   
   dynamic "vcs_repo" {

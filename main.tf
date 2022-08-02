@@ -28,7 +28,7 @@ locals {
     execution_mode      = try(workspace["execution_mode"], "remote")
     speculative_enabled = try(workspace["speculative_enabled"], true)
     vcs_repo            = try(workspace["vcs_repo"], {})
-    working_directory   = try(workspace["working_directory "], "")
+    working_directory   = try(workspace["working_directory"], "")
   }]
 
   #Create a list of workspace access entries

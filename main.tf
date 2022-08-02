@@ -23,11 +23,12 @@ locals {
     teams               = try(workspace["teams"], [])
     terraform_version   = try(workspace["terraform_version"], "~> 1.2.6")
     tag_names           = try(workspace["tag_names"], [])
-    auto_apply          = true
+    auto_apply          = try(workspace["auto_apply"], [])
     allow_destroy_plan  = try(workspace["auto_apply"], true)
     execution_mode      = try(workspace["execution_mode"], "remote")
     speculative_enabled = try(workspace["speculative_enabled"], true)
-    vcs_repo            = try(workspace["vcs_repo"], {"identifier": "aaroneVM/config-org","oauth_token_id": "ot-c7qh71ExuzWb3MCV"})
+    vcs_repo            = try(workspace["vcs_repo"], {})
+    working_directory   = try(workspace["working_directory "], "")
   }]
 
   #Create a list of workspace access entries
@@ -64,19 +65,19 @@ resource "tfe_workspace" "workspaces" {
   terraform_version   = each.value["terraform_version"]
   organization        = local.organization_name
   tag_names           = each.value["tag_names"]
-  auto_apply          = true
+  auto_apply          = each.value["auto_apply"]
   allow_destroy_plan  = each.value["allow_destroy_plan"]
   execution_mode      = each.value["execution_mode"]
   speculative_enabled = each.value["speculative_enabled"]
+  working_directory   = each.value["working_directory"]
   # Create a single vcs_repo block if value isn't an empty map
   
   dynamic "vcs_repo" {
     for_each = each.value["vcs_repo"] != {} ? toset(["1"]) : toset([])
     
     content {
-      #identifier     = vcs_repo["identifier"]
-      identifier     = try(each.value.vcs_repo["identifier"], "aaroneVM/config-org")
-      oauth_token_id = try(each.value.vcs_repo["oauth_token_id"], "ot-c7qh71ExuzWb3MCV")
+      identifier     = try(each.value.vcs_repo["identifier"], "")
+      oauth_token_id = try(each.value.vcs_repo["oauth_token_id"], "")
     }
   }
 }

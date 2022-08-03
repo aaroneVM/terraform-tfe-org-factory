@@ -2,9 +2,9 @@
 # Manual edits may be lost in future updates.
 
 provider "registry.terraform.io/hashicorp/tfe" {
-  version     = "0.27.0"
-  constraints = ">= 0.27.0"
+  version = "0.27.0"
   hashes = [
+    "h1:1PKJNDkjcxkAzFhH1LMlLgLthpCuOPf3oA/yZFW5eN8=",
     "h1:jhKikNmQiOPx4mITJh36F9cUOxvTzO9dUQgUCP4JioI=",
     "zh:3f6dcf4a54628f9ab3531ee5934c8ce3fd61a8ee9560624a878a0e089b70bdd9",
     "zh:69e1f4018c11821f771fc4e1cc28bba46cf1176098c7f0208b77fe7fd085f9e5",

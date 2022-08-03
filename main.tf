@@ -17,20 +17,21 @@ locals {
   raw_workspaces = try(local.org_data.workspaces, [])
 
   # Normalize the workspace data, at the very least it needs to have a name
-  workspaces = [for workspace in local.raw_workspaces : {
-    name                = workspace["name"]
-    description         = try(workspace["description"], "No description provided.")
-    teams               = try(workspace["teams"], [])
-    terraform_version   = try(workspace["terraform_version"], "~> 1.2.6")
-    tag_names           = try(workspace["tag_names"], [])
-    auto_apply          = try(workspace["auto_apply"], false)
-    allow_destroy_plan  = try(workspace["auto_apply"], false)
-    execution_mode      = try(workspace["execution_mode"], "remote")
-    speculative_enabled = try(workspace["speculative_enabled"], true)
-    vcs_repo            = try(workspace["vcs_repo"], {})
-    working_directory   = try(workspace["working_directory"], "")
-    trigger_patterns    = try(workspace["trigger_patterns"], "")
-  }]
+  workspaces = {for workspace in local.raw_workspaces: 
+    workspace["name"] => {
+      name                = workspace["name"]
+      description         = try(workspace["description"], "No description provided.")
+      teams               = try(workspace["teams"], [])
+      terraform_version   = try(workspace["terraform_version"], "~> 1.2.6")
+      tag_names           = try(workspace["tag_names"], [])
+      auto_apply          = try(workspace["auto_apply"], false)
+      allow_destroy_plan  = try(workspace["auto_apply"], false)
+      execution_mode      = try(workspace["execution_mode"], "remote")
+      speculative_enabled = try(workspace["speculative_enabled"], true)
+      vcs_repo            = try(workspace["vcs_repo"], {})
+      working_directory   = try(workspace["working_directory"], "")
+      trigger_patterns    = try(workspace["trigger_patterns"], "")
+  }}
 
   #Create a list of workspace access entries
   workspace_team_access = flatten([
@@ -56,11 +57,14 @@ locals {
 
 }
 
+#output "test" {
+#  value = local.workspaces
+#}
 # Create workspaces
 resource "tfe_workspace" "workspaces" {
   # Create a map of workspaces from the list stored in JSON using the
   # workspace name as the key
-  for_each            = { for workspace in local.workspaces : workspace["name"] => workspace }
+  for_each            = local.workspaces
   name                = each.key
   description         = each.value["description"]
   terraform_version   = each.value["terraform_version"]
@@ -72,7 +76,7 @@ resource "tfe_workspace" "workspaces" {
   speculative_enabled = each.value["speculative_enabled"]
   working_directory   = each.value["working_directory"]
   trigger_patterns    = each.value["trigger_patterns"]
-  # Create a single vcs_repo block if value isn't an empty map
+  #Create a single vcs_repo block if value isn't an empty map
   
   dynamic "vcs_repo" {
     for_each = each.value["vcs_repo"] != {} ? toset(["1"]) : toset([])
@@ -84,7 +88,19 @@ resource "tfe_workspace" "workspaces" {
   }
 }
 
-# Create teams
+
+# # Create variables
+
+# resource "tfe_variable" "variables" {
+#   for_each = tfe_workspace.workspace
+#   key          = each.value"foo"
+#   value        = "bar"
+#   category     = "terraform"
+#   workspace_id = "ws-9mrBJcri5Rd427gv"
+#   description  = "a useful description"
+# }
+
+# # Create teams
 resource "tfe_team" "teams" {
   # Create a map of teams from the list stored in JSON using the 
   # team name as the key
@@ -107,8 +123,7 @@ resource "tfe_team" "teams" {
   }
 }
 
-
-# Configure workspace access for teams
+# # Configure workspace access for teams
 resource "tfe_team_access" "team_access" {
   for_each     = { for access in local.workspace_team_access : "${access.workspace_name}_${access.team_name}" => access }
   access       = each.value["access_level"]
@@ -145,10 +160,3 @@ resource "tfe_team_organization_member" "team_members" {
 }
 
 
-resource "tfe_variable" "test" {
-  key          = "foo"
-  value        = "bar"
-  category     = "terraform"
-  workspace_id = "ws-9mrBJcri5Rd427gv"
-  description  = "a useful description"
-}

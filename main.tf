@@ -24,6 +24,7 @@ locals {
       teams               = try(workspace["teams"], [])
       terraform_version   = try(workspace["terraform_version"], "~> 1.2.6")
       tag_names           = try(workspace["tag_names"], [])
+      variables           = try(workspace["variables"], {})
       auto_apply          = try(workspace["auto_apply"], false)
       allow_destroy_plan  = try(workspace["allow_destroy_plan"], false)
       execution_mode      = try(workspace["execution_mode"], "remote")
@@ -31,7 +32,6 @@ locals {
       vcs_repo            = try(workspace["vcs_repo"], {})
       working_directory   = try(workspace["working_directory"], "")
       trigger_patterns    = try(workspace["trigger_patterns"], "")
-      variables           = try(workspace["variables"], {})
   }}
 
   #Create a list of workspace access entries
@@ -101,8 +101,6 @@ resource "tfe_workspace" "workspaces" {
     }
   }
 }
-
-
 # # Create variables
 resource "tfe_variable" "variables" {
   for_each = local.tfe_variables

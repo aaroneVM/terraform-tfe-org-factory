@@ -31,11 +31,12 @@ locals {
       vcs_repo            = try(workspace["vcs_repo"], {})
       working_directory   = try(workspace["working_directory"], "")
       trigger_patterns    = try(workspace["trigger_patterns"], "")
+      variables           = try(workspace["variables"], {})
   }}
 
   #Create a list of workspace access entries
   workspace_team_access = flatten([
-    for workspace in local.workspaces : [
+    for key, workspace in local.workspaces : [
       for team in workspace["teams"] : {
         workspace_name = workspace["name"]
         team_name      = team["name"]
@@ -43,6 +44,21 @@ locals {
       }
     ]
   ])
+
+  tfe_variables = { 
+    for item in flatten ([
+      for workspace_key, workspace_value in local.workspaces: [
+        for variable in workspace_value["variables"]: [{
+          format("%s_%s", workspace_key, variable["name"]) = {
+            name = variable["name"]
+            category = variable["category"]
+            value = variable["value"]
+            workspace_key = workspace_key
+          } 
+        }] 
+      ]
+    ]): keys(item)[0] => values(item)[0]
+  }
 
   # Try to extract the team data
   raw_teams = try(local.org_data.teams, [])
@@ -57,9 +73,7 @@ locals {
 
 }
 
-#output "test" {
-#  value = local.workspaces
-#}
+
 # Create workspaces
 resource "tfe_workspace" "workspaces" {
   # Create a map of workspaces from the list stored in JSON using the
@@ -90,15 +104,14 @@ resource "tfe_workspace" "workspaces" {
 
 
 # # Create variables
-
-# resource "tfe_variable" "variables" {
-#   for_each = tfe_workspace.workspace
-#   key          = each.value"foo"
-#   value        = "bar"
-#   category     = "terraform"
-#   workspace_id = "ws-9mrBJcri5Rd427gv"
-#   description  = "a useful description"
-# }
+resource "tfe_variable" "variables" {
+  for_each = local.tfe_variables
+  key          = each.value["name"]
+  value        = each.value["value"]
+  category     = each.value["category"]
+  workspace_id = tfe_workspace.workspaces[each.value["workspace_key"]].id
+  description  = "crated by TF"
+}
 
 # # Create teams
 resource "tfe_team" "teams" {
@@ -158,5 +171,3 @@ resource "tfe_team_organization_member" "team_members" {
   team_id                    = tfe_team.teams[each.value["team_name"]].id
   organization_membership_id = tfe_organization_membership.org_members[each.value["member_name"]].id
 }
-
-

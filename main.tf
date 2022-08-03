@@ -32,6 +32,7 @@ locals {
       vcs_repo            = try(workspace["vcs_repo"], {})
       working_directory   = try(workspace["working_directory"], "")
       trigger_patterns    = try(workspace["trigger_patterns"], "")
+      queue_all_runs      = try(workspace["queue_all_runs"], true)
   }}
 
   #Create a list of workspace access entries
@@ -90,6 +91,7 @@ resource "tfe_workspace" "workspaces" {
   speculative_enabled = each.value["speculative_enabled"]
   working_directory   = each.value["working_directory"]
   trigger_patterns    = each.value["trigger_patterns"]
+  queue_all_runs      = each.value["queue_all_runs"]
   #Create a single vcs_repo block if value isn't an empty map
   
   dynamic "vcs_repo" {

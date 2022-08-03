@@ -32,7 +32,7 @@ locals {
       vcs_repo            = try(workspace["vcs_repo"], {})
       working_directory   = try(workspace["working_directory"], "")
       trigger_patterns    = try(workspace["trigger_patterns"], "")
-      queue_all_runs      = try(workspace["queue_all_runs"], true)
+      queue_all_runs      = try(workspace["queue_all_runs"], false)
   }}
 
   #Create a list of workspace access entries
